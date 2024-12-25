@@ -1,49 +1,52 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline for Python
 
 on:
   push:
     branches:
-      - main
+      - main  # Define que o pipeline será acionado no push para a branch 'main'
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Usando a última versão do Ubuntu para rodar o pipeline
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Baixa o código do repositório
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4  # Configura a versão do Python
         with:
-          node-version: '16'
+          python-version: '3.9'  # Versão do Python a ser usada
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          python -m pip install --upgrade pip  # Atualiza o pip
+          pip install -r requirements.txt  # Instala as dependências do projeto
 
       - name: Run Tests
-        run: npm test
+        run: |
+          # Caso você tenha testes, execute-os aqui, por exemplo:
+          pytest  # Caso você tenha o pytest como framework de testes
 
   deploy:
-    runs-on: ubuntu-latest
-    needs: build
+    runs-on: ubuntu-latest  # Usando Ubuntu também para a fase de deploy
+    needs: build  # O deploy só ocorre se o build for bem-sucedido
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Baixa o código do repositório
 
       - name: Set up SSH Agent
-        uses: webfactory/ssh-agent@v0.7.0
+        uses: webfactory/ssh-agent@v0.7.0  # Configura o SSH com chave privada
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Chave privada armazenada nos segredos
 
       - name: Deploy to AWS EC2
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@v0.1.7  # Ação para conectar via SSH e rodar comandos na EC2
         with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.AWS_EC2_HOST }}  # Endereço da sua instância EC2
+          username: ec2-user  # Usuário da EC2 (pode ser 'ubuntu' dependendo da AMI)
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # Chave privada para autenticação SSH
           script: |
-            cd /path/to/your/application
-            git pull origin main
-            npm install
-            pm2 restart all
-            
+            cd /path/to/your/application  # Altere o caminho conforme necessário
+            git pull origin main  # Puxa as últimas alterações da branch 'main'
+            pip install -r requirements.txt  # Instala ou atualiza as dependências
+            python teste.py  # Executa o seu script Python principal
