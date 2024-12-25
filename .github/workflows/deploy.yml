@@ -3,7 +3,7 @@ name: CI/CD Pipeline for Python
 on:
   push:
     branches:
-      - main  # Define que o pipeline será acionado no push para a branch 'main'
+      - master  # A branch foi alterada de 'main' para 'master'
 
 jobs:
   build:
@@ -47,6 +47,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # Chave privada para autenticação SSH
           script: |
             cd /path/to/your/application  # Altere o caminho conforme necessário
-            git pull origin main  # Puxa as últimas alterações da branch 'main'
+            git pull origin master  # Puxa as últimas alterações da branch 'master'
             pip install -r requirements.txt  # Instala ou atualiza as dependências
             python teste.py  # Executa o seu script Python principal
