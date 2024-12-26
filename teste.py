@@ -21,5 +21,3 @@ if __name__ == "__main__":
     print(inverte)
     print(inverte)
     print(inverte)
-    
-cl
