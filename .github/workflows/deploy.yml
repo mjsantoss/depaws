@@ -42,7 +42,7 @@ jobs:
       - name: Deploy to AWS EC2
         uses: appleboy/ssh-action@v0.1.7  # Ação para conectar via SSH e rodar comandos na EC2
         with:
-          host: ${35.89.189.158}  # Endereço da sua instância EC2
+          host: ${{35.89.189.158}}  # Endereço da sua instância EC2
           username: ubuntu  # Usuário da EC2 (pode ser 'ubuntu' dependendo da AMI)
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # Chave privada para autenticação SSH
           script: |
