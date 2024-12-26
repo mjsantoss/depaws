@@ -1,0 +1,52 @@
+name: CI/CD Pipeline for Python
+
+on:
+  push:
+    branches:
+      - master  # A branch foi alterada de 'main' para 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Usando a última versão do Ubuntu para rodar o pipeline
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3  # Baixa o código do repositório
+
+      - name: Set up Python
+        uses: actions/setup-python@v4  # Configura a versão do Python
+        with:
+          python-version: '3.9'  # Versão do Python a ser usada
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip  # Atualiza o pip
+          pip install -r requirements.txt  # Instala as dependências do projeto
+
+      - name: Run Tests
+        run: |
+          # Caso você tenha testes, execute-os aqui, por exemplo:
+          pytest  # Caso você tenha o pytest como framework de testes
+
+  deploy:
+    runs-on: ubuntu-latest  # Usando Ubuntu também para a fase de deploy
+    needs: build  # O deploy só ocorre se o build for bem-sucedido
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3  # Baixa o código do repositório
+
+      - name: Set up SSH Agent
+        uses: webfactory/ssh-agent@v0.7.0  # Configura o SSH com chave privada
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Chave privada armazenada nos segredos
+
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@v0.1.7  # Ação para conectar via SSH e rodar comandos na EC2
+        with:
+          host: ${{35.89.189.158}}  # Endereço da sua instância EC2
+          username: ubuntu  # Usuário da EC2 (pode ser 'ubuntu' dependendo da AMI)
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # Chave privada para autenticação SSH
+          script: |
+            cd /home/ubuntu/meu-projeto-cdk  # Altere o caminho conforme necessário
+            git pull origin master  # Puxa as últimas alterações da branch 'master'
+            pip install -r requirements.txt  # Instala ou atualiza as dependências
+            python teste.py  # Executa o seu script Python principal
