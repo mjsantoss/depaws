@@ -20,6 +20,5 @@ if __name__ == "__main__":
     inverte = InverteLista(lista)
     print(inverte)
     print(inverte)
-    print(inverte)
     
 cl
