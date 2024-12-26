@@ -46,6 +46,8 @@ jobs:
           username: ubuntu  # Usuário da EC2 (pode ser 'ubuntu' dependendo da AMI)
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # Chave privada para autenticação SSH
           script: |
+            python3 -m venv venv
+            source venv/bin/activate
             cd /home/ubuntu/meu-projeto-cdk  # Altere o caminho conforme necessário
             git pull origin master  # Puxa as últimas alterações da branch 'master'
             pip install -r requirements.txt  # Instala ou atualiza as dependências
