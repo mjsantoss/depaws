@@ -2,6 +2,6 @@ version: "3"
 services:
   server:
     build: .
-    container_name: bia-2
+    container_name: bia
     ports:
       - 80:8080
